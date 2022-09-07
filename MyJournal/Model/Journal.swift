@@ -26,6 +26,10 @@ class Journal {
         journalEntries.append(entry)
     }
     
+    func removeEntry(index: Int) {
+        journalEntries.remove(at: index)
+    }
+    
     func getEntryAt(index: Int) -> JournalEntry? {
         
         if index >= 0 && index < journalEntries.count {
