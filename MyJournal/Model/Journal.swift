@@ -15,10 +15,6 @@ class Journal {
         return journalEntries.count
     }
     
-//    func getCount() -> Int {
-//        return journalEntries.count
-//    }
-    
     func addEntry(entry: JournalEntry) {
         if entry.content == "" {
             return

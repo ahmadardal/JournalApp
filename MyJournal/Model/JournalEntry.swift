@@ -24,14 +24,14 @@ struct JournalEntry {
     }
     
     init(title: String, content: String) {
-        self.formatter.dateStyle = .short
+        self.formatter.dateFormat = "dd/MM/yy"
         self.content = content
         self.title = title
         self.unformattedDate = Date()
     }
     
     init(title: String, content: String, date: Date) {
-        self.formatter.dateStyle = .short
+        self.formatter.dateFormat = "dd/MM/yy"
         self.content = content
         self.title = title
         self.unformattedDate = date
