@@ -13,6 +13,12 @@ class JournalTableViewController: UITableViewController {
     
     var journal = Journal()
     
+    let segueToCreateEntry = "segueToCreateEntry"
+    
+    let segueToViewEntry = "segueToViewEntry"
+    
+    @IBOutlet var myTableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -23,81 +29,105 @@ class JournalTableViewController: UITableViewController {
         
         
     }
-
-    // MARK: - Table view data source
-
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        myTableView.reloadData()
+    }
+    
     
     // Antalet sektioner som våran TableView har.
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
     }
-
+    
     // Bestämmer antalet rader i varje sektion. Om man har stöd för flera sektioner, så kan man skilja dem åt genom deras section nummer.
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return journal.count
     }
-
+    
     // Returnerar varje enskild cell. Vi kan formatera varje cell dynamiskt här. Vi kan även veta vilken rad som våran cell befinner sig i, genom indexPath. Den här funktionen kommer att köras en gång för varje cell.
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: JournalCell, for: indexPath)
-
+        
         var content = cell.defaultContentConfiguration()
         
         if let entry = journal.getEntryAt(index: indexPath.row) {
-            content.text = "\(entry.date) \(entry.content)"
+            content.text = "\(entry.date) \(entry.title)"
         }
         
         cell.contentConfiguration = content
-
+        
         return cell
     }
     
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let remove = UIContextualAction(style: .destructive, title: "Delete", handler: {(action, view, completion) in
+            self.journal.removeAt(index: indexPath.row) // Tar bort entryt från våran array
+            self.myTableView.deleteRows(at: [indexPath], with: .fade) // Tar bort raden från våran TableView
+        })
+        
+        let test = UIContextualAction(style: .normal, title: "Test", handler: {(action, view, completion) in
+            self.performSegue(withIdentifier: self.segueToViewEntry, sender: self)
+        })
+        
+        test.backgroundColor = UIColor.init(red: 114/255, green: 0/255, blue: 201/255, alpha: 1)
+        
+        
+        let actions = UISwipeActionsConfiguration(actions: [remove, test])
+        
+        return actions
+        
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        
+        switch segue.identifier {
+        case segueToCreateEntry:
+            if let destinationVC = segue.destination as? CreateEntryViewController {
+                destinationVC.journal = self.journal
+            }
+            break
+        case segueToViewEntry:
+            
+//            if let destinationVC = segue.destination as? ExistingEntryViewController,
+//               let selectedCellIndex = myTableView.indexPathForSelectedRow?.row {
+//               let selectedEntry = journal.getEntryAt(index: selectedCellIndex)
+//                destinationVC.journalEntry = selectedEntry
+//            }
+            
+//            if let destinationVC = segue.destination as? ExistingEntryViewController,
+//               let cell = sender as? UITableViewCell,
+//               let indexPath = myTableView.indexPath(for: cell),
+//               let entry = journal.getEntryAt(index: indexPath.row) {
+//
+//                destinationVC.journalEntry = entry
+//
+//            }
+            // Guard statements
+        
+            
+            
+            
+            guard let destinationVC = segue.destination as? ExistingEntryViewController else { return }
+            guard let cell = sender as? UITableViewCell else { return }
+            guard let indexPath = myTableView.indexPath(for: cell) else { return }
+            guard let entry = journal.getEntryAt(index: indexPath.row) else { return }
+            
+            //
+            
+            destinationVC.journalEntry = entry
+            
+            
+            break
+        default: return
+        }
+        
     }
-    */
-
+    
+    
 }

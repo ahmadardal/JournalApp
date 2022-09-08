@@ -14,6 +14,7 @@ import Foundation
 struct JournalEntry {
     private var formatter = DateFormatter()
     private var unformattedDate: Date
+    private var myDateFormat = "yyyy-MM-dd"
     
     var content: String
     
@@ -24,14 +25,14 @@ struct JournalEntry {
     }
     
     init(title: String, content: String) {
-        self.formatter.dateStyle = .short
+        self.formatter.dateFormat = myDateFormat
         self.content = content
         self.title = title
         self.unformattedDate = Date()
     }
     
     init(title: String, content: String, date: Date) {
-        self.formatter.dateStyle = .short
+        self.formatter.dateFormat = myDateFormat
         self.content = content
         self.title = title
         self.unformattedDate = date
